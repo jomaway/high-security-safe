@@ -2,40 +2,45 @@
 #include "state_machine.h"
 
 // defines
-#define LED_RED_PIN PA7
-#define LED_ORANGE_PIN PA6
-#define LED_GREEN_PIN PA5
+#define LED_RED_LOCKED_PIN PC9
+#define LED_GREEN_LOCK_1_PIN PC8 
+#define LED_GREEN_LOCK_2_PIN PC6
+#define LED_GREEN_LOCK_3_PIN PC5
 
-#define BTN_1_PIN PC7
-#define BTN_2_PIN PA9
-#define BTN_3_PIN PA8
-#define BTN_4_PIN PB10
+#define BTN_1_PIN PC0
+#define BTN_2_PIN PC1
+#define BTN_3_PIN PB0
+#define BTN_4_PIN PA4
 
-
-
-void setup_btn_and_led();
+void led_setup();
+void button_setup();
 void check_buttons();
 void check_states();
 
 void setup()
 {
-  // put your setup code here, to run once:
-  setup_btn_and_led();
+  led_setup();
+  button_setup();
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
   check_buttons();
   check_states();
 }
 
-void setup_btn_and_led()
+void led_setup()
 {
-  pinMode(LED_GREEN_PIN, OUTPUT);
-  pinMode(LED_ORANGE_PIN, OUTPUT);
-  pinMode(LED_RED_PIN, OUTPUT);
+  // Define all leds as output
+  pinMode(LED_RED_LOCKED_PIN, OUTPUT);
+  pinMode(LED_GREEN_LOCK_1_PIN, OUTPUT);
+  pinMode(LED_GREEN_LOCK_2_PIN, OUTPUT);
+  pinMode(LED_GREEN_LOCK_3_PIN, OUTPUT);
+}
 
+void button_setup()
+{
+  // Define all buttons as input. PULLUPs are used external
   pinMode(BTN_1_PIN, INPUT);
   pinMode(BTN_2_PIN, INPUT);
   pinMode(BTN_3_PIN, INPUT);
@@ -62,6 +67,8 @@ void check_buttons()
   if (LOW == digitalRead(BTN_4_PIN))
   {
     state_machine(INPUT_REFUSED);
+    state_machine(OPEN_DOOR);
+    state_machine(CLOSE_DOOR);
   }
 }
 
@@ -69,19 +76,28 @@ void check_states(){
   switch (state)
   {
   case SAFE_LOCKED:
-    digitalWrite(LED_RED_PIN,HIGH);
-    digitalWrite(LED_ORANGE_PIN, LOW);
-    digitalWrite(LED_GREEN_PIN, LOW);
+    digitalWrite(LED_RED_LOCKED_PIN,HIGH);
+    digitalWrite(LED_GREEN_LOCK_1_PIN, LOW);
+    digitalWrite(LED_GREEN_LOCK_2_PIN, LOW);
+    digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
     break;
   case LEVEL_1_UNLOCKED:
-    digitalWrite(LED_RED_PIN,LOW);
-    digitalWrite(LED_ORANGE_PIN, HIGH);
-    digitalWrite(LED_GREEN_PIN, LOW);
+    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
+    digitalWrite(LED_GREEN_LOCK_2_PIN, LOW);
+    digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
     break;
   case LEVEL_2_UNLOCKED:
-    digitalWrite(LED_RED_PIN,LOW);
-    digitalWrite(LED_ORANGE_PIN, HIGH);
-    digitalWrite(LED_GREEN_PIN, HIGH);
+    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
+    digitalWrite(LED_GREEN_LOCK_2_PIN, HIGH);
+    digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
+    break;
+  case LEVEL_3_UNLOCKED:
+    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
+    digitalWrite(LED_GREEN_LOCK_2_PIN, HIGH);
+    digitalWrite(LED_GREEN_LOCK_3_PIN, HIGH);
     break;
   default:
     break;
