@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include "state_machine.h"
+#include "keypad.h"
 
 // defines
 #define LED_RED_LOCKED_PIN PC9
-#define LED_GREEN_LOCK_1_PIN PC8 
+#define LED_GREEN_LOCK_1_PIN PC8
 #define LED_GREEN_LOCK_2_PIN PC6
 #define LED_GREEN_LOCK_3_PIN PC5
 
@@ -21,6 +22,8 @@ void setup()
 {
   led_setup();
   button_setup();
+  keypad_setup_pins();
+  Serial.begin(115200);
 }
 
 void loop()
@@ -72,29 +75,35 @@ void check_buttons()
   }
 }
 
-void check_states(){
+void check_states()
+{
   switch (state)
   {
   case SAFE_LOCKED:
-    digitalWrite(LED_RED_LOCKED_PIN,HIGH);
+    digitalWrite(LED_RED_LOCKED_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_1_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_2_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
     break;
   case LEVEL_1_UNLOCKED:
-    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_RED_LOCKED_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_2_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
+    
+    if (char key = get_key())
+    {
+      Serial.printf("Key: %c \n", key);
+    }
     break;
   case LEVEL_2_UNLOCKED:
-    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_RED_LOCKED_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_2_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
     break;
   case LEVEL_3_UNLOCKED:
-    digitalWrite(LED_RED_LOCKED_PIN,LOW);
+    digitalWrite(LED_RED_LOCKED_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_2_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_3_PIN, HIGH);
