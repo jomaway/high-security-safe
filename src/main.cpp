@@ -2,22 +2,8 @@
 #include "state_machine.h"
 #include "keypad.h"
 #include "rotary_encoder.h"
+#include "pin_defs.h"
 
-// defines
-#define LED_RED_LOCKED_PIN PC9
-#define LED_GREEN_LOCK_1_PIN PC8
-#define LED_GREEN_LOCK_2_PIN PC6
-#define LED_GREEN_LOCK_3_PIN PC5
-
-#define BTN_1_PIN PC0
-#define BTN_2_PIN PC1
-#define BTN_3_PIN PB0
-#define BTN_4_PIN PA4
-
-// Pins for the Rotary Encoder
-#define RE_PIN_A PB5
-#define RE_PIN_B PA10
-#define RE_SW PB3
 
 void led_setup();
 void button_setup();
@@ -55,9 +41,9 @@ void loop()
     // Serial.printf("Received: %d\n", buf);
   }
 
-  int32_t encoder_state = get_counter();
+  int32_t encoder_state = get_encoder_state();
   if (encoder_state != last_encoder_state) {
-    Serial.printf("RE counter: %d \n", get_counter());
+    Serial.printf("Encoder state: %d \n", encoder_state);
     last_encoder_state = encoder_state;
   }
 }
@@ -124,7 +110,7 @@ void check_states()
 
     if (char key = get_key())
     {
-      Serial.printf("Key: %c \n", key);
+      Serial.printf("Keypad Key: %c \n", key);
     }
     break;
   case LEVEL_2_UNLOCKED:

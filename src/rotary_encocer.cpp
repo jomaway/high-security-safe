@@ -1,7 +1,7 @@
 #include "rotary_encoder.h"
 #include "Arduino.h"
 
-uint64_t last_re_reading_time = 0;
+// uint64_t last_re_reading_time = 0;
 
 uint8_t encoder_pinA = 0;
 uint8_t encoder_pinB = 0;
@@ -19,13 +19,16 @@ void setup_encoder(uint8_t pinA, uint8_t pinB, uint8_t pinSW)
 
     attachInterrupt(pinA, isr_re, RISING); // Detect high->low and low->high edge
 }
-
-int get_counter()
+/// @brief get the current state of the encoders counter.
+/// @return the current counter value.
+int32_t get_encoder_state()
 {
     return counter;
 }
 
-void set_counter(int32_t value)
+/// @brief set the encoder state to a new value.
+/// @param value an int32_t value
+void set_encoder_state(int32_t value)
 {
     counter = value;
 }
@@ -33,19 +36,15 @@ void set_counter(int32_t value)
 void isr_re()
 {
     bool state_pinB = digitalRead(encoder_pinB);
-    if ((millis() - last_re_reading_time) > 10)
+
+    if (HIGH == state_pinB)
     {
-        if (HIGH == state_pinB)
-        {
-            // counter clockwise
-            counter--;
-        }
-        else
-        {
-            // clockwise
-            counter++;
-        }
-        last_re_reading_time = millis();
-        // Serial.printf("Counter: %d \n", counter % 12);
+        // counter clockwise
+        counter--;
+    }
+    else
+    {
+        // clockwise
+        counter++;
     }
 }

@@ -3,19 +3,10 @@
 
 #include <inttypes.h>
 #include "Arduino.h"
+#include "pin_defs.h"
 
 #define ROWS_NUM 4
 #define COLS_NUM 4
-
-#define KEYPAD_ROW_1 PA5
-#define KEYPAD_ROW_2 PA6
-#define KEYPAD_ROW_3 PA7
-#define KEYPAD_ROW_4 PB6
-
-#define KEYPAD_COL_1 PC7
-#define KEYPAD_COL_2 PA9
-#define KEYPAD_COL_3 PA8
-#define KEYPAD_COL_4 PB10
 
 #define DEBOUNCE_TIME 10
 const char NO_KEY = '\0';
