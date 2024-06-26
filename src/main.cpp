@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "state_machine.h"
 #include "keypad.h"
+#include "rotary_encoder.h"
 
 // defines
 #define LED_RED_LOCKED_PIN PC9
@@ -15,33 +16,50 @@
 
 // Pins for the Rotary Encoder
 #define RE_PIN_A PB5
-#define RE_PIN_B PB3
-#define RE_SW PA10
+#define RE_PIN_B PA10
+#define RE_SW PB3
 
 void led_setup();
 void button_setup();
-void exti_setup();
 void check_buttons();
 void check_states();
-void isr_re();
-
-
-volatile int32_t counter = 0;
 
 void setup()
 {
   led_setup();
   button_setup();
-  exti_setup();
+  setup_encoder(RE_PIN_A, RE_PIN_B, RE_SW);
   keypad_setup_pins();
   Serial.begin(115200);
 }
+
+int32_t last_encoder_state = 0;
 
 void loop()
 {
   check_buttons();
   check_states();
-  Serial.printf("Counter: %d \n", counter);
+  // Serial.printf("Counter: %d \n", counter);
+  if (Serial.available()){
+    uint8_t buf = Serial.read();
+    if (buf == '1') {
+      state_machine(INPUT_1_ACCEPTED);
+    }
+    if (buf == '2'){
+      state_machine(INPUT_2_ACCEPTED);
+    }
+    if (buf == '3'){
+      state_machine(INPUT_REFUSED);
+    }
+    //  ...
+    // Serial.printf("Received: %d\n", buf);
+  }
+
+  int32_t encoder_state = get_counter();
+  if (encoder_state != last_encoder_state) {
+    Serial.printf("RE counter: %d \n", get_counter());
+    last_encoder_state = encoder_state;
+  }
 }
 
 void led_setup()
@@ -62,27 +80,6 @@ void button_setup()
   pinMode(BTN_4_PIN, INPUT);
 }
 
-void exti_setup()
-{
-  pinMode(RE_PIN_A, INPUT_PULLUP);
-  pinMode(RE_PIN_B, INPUT_PULLUP); 
-
-  attachInterrupt(RE_PIN_A, isr_re, RISING);
-}
-
-void isr_re(){
-  // TODO : entprellen mit millis()
-  if (HIGH == digitalRead(RE_PIN_B))
-  {
-    // counter clockwise
-    counter--;
-  }
-  else 
-  {
-    // clockwise
-    counter++;
-  }
-}
 
 void check_buttons()
 {
@@ -124,7 +121,7 @@ void check_states()
     digitalWrite(LED_GREEN_LOCK_1_PIN, HIGH);
     digitalWrite(LED_GREEN_LOCK_2_PIN, LOW);
     digitalWrite(LED_GREEN_LOCK_3_PIN, LOW);
-    
+
     if (char key = get_key())
     {
       Serial.printf("Key: %c \n", key);

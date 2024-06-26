@@ -10,6 +10,7 @@ This repo contains all files for the high security safe project for teaching emb
 
 - Nucleo-F401RE
 - 4x4 Keypad
+- Rotary Encoder (z.. KY-40)
 
 - Some Buttons, LEDs, Resistors for testing
 
