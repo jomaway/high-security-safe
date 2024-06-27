@@ -44,8 +44,8 @@ Sie können dieses repo als Ausgangslage wählen.
 ### Allgemein (Gilt für alle Gruppen)
 - Die Theorie hinter den Bauteilen soll anschaulich und in einer angemessenen Tiefe vermittelt werden.
 - Integration ins Projekt soll über eine eigenen Modul (.h/.cpp) erfolgen, welche die nötigen Funktionen bereitstellt. Wie für Statemachine, Keypad und Rotary Encoder auch bereits geschehen.
-- Sie sollten ihren eigenen Code verstehen.
 - Für HW Aufbauten soll ein Schaltplan vorhanden sein.
+- Sie sollten Nachfragen zur Umsetzung beantworten können.
 
 ### LED Ring (WS2812b)
 Der LED Ring soll folgendermaßen angebunden werden:
